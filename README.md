@@ -1,6 +1,7 @@
 # DeShawn's Dog Walking
 **Add your ERD here**
 
+```dbml
 // city data
 Table cities {
   id int [pk]
@@ -35,3 +36,4 @@ Ref: "walkers"."walker_name" < "city_walkers"."walker_id"
 Ref: "cities"."id" < "dogs"."city_id"
 
 Ref: "walkers"."id" < "dogs"."walker_id"
+```
