@@ -1,23 +1,43 @@
-import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from "reactstrap";
+import {
+  Navbar,
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink as BSNavLink,
+} from "reactstrap";
+import { NavLink as RRNavLink, Outlet } from "react-router-dom";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
-
-import { Outlet } from "react-router-dom";
-
+//  tag prop that lets you swap out the underlying HTML element
 function App() {
   return (
     <div className="App">
-      <>
-        <Navbar color="light" expand="md">
-          <Nav navbar>
-            <NavbarBrand href="/">🐕‍🦺 🐩 DeShawn's Dog Walking</NavbarBrand>
-            <NavItem>
-              <NavLink href="/walkers">Walkers</NavLink>
-            </NavItem>
-          </Nav>
-        </Navbar>
-        <Outlet />
-      </>
+      <Navbar color="light" expand="md" className="px-4">
+        <NavbarBrand tag={RRNavLink} to="/">
+          🐕‍🦺 🐩 DeShawn's Dog Walking
+        </NavbarBrand>
+        <Nav className="me-auto" navbar>
+          <NavItem>
+            <BSNavLink tag={RRNavLink} to="/" end>
+              Dogs
+            </BSNavLink>
+          </NavItem>
+          <NavItem>
+            <BSNavLink tag={RRNavLink} to="/walkers"></BSNavLink>
+          </NavItem>
+          <NavItem>
+            <BSNavLink tag={RRNavLink} to="/cities">
+              Cities
+            </BSNavLink>
+          </NavItem>
+          <NavItem>
+            <BSNavLink tag={RRNavLink} to="/dogs/new">
+              + Add Dog
+            </BSNavLink>
+          </NavItem>
+        </Nav>
+      </Navbar>
+      <Outlet />
     </div>
   );
 }
