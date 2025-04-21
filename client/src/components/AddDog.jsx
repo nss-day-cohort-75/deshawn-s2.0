@@ -49,6 +49,7 @@ export default function AddDog() {
           <input
             type="number"
             id="walkerId"
+            min={0}
             className="form-control"
             value={walkerId}
             onChange={(e) => setWalkerId(e.target.value)}
