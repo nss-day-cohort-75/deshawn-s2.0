@@ -65,7 +65,26 @@ app.MapGet("/api/dogs", () =>
     });
 });
 
-app.MapGet("/api/dogs/{id}", (int id) => $"Fetch dog with id {id}");
+app.MapGet("/api/dogs/{id}", (int id) =>
+{
+    var dog = dogs.FirstOrDefault(d => d.Id == id);
+    if (dog == null) return Results.NotFound();
+
+    var walkerName = dog.WalkerId.HasValue
+        ? walkers.FirstOrDefault(w => w.Id == dog.WalkerId)?.WalkerName
+        : null;
+
+    var DTO = new DogDTO
+    {
+        Id = dog.Id,
+        Name = dog.Name,
+        WalkerId = dog.WalkerId,
+        WalkerName = walkerName
+    };
+
+    return Results.Ok(DTO);
+});
+
 app.MapPost("/api/dogs", () => "Add a new dog");
 app.MapDelete("/api/dogs/{id}", (int id) => $"Delete dog with id {id}");
 
