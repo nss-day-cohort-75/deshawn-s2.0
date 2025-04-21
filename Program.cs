@@ -6,7 +6,8 @@ List<Dog> dogs = new List<Dog> {
     new Dog { Id = 2, Name = "Bark Twain", WalkerId = 1 },
     new Dog { Id = 3, Name = "Sir Waggington", WalkerId = 3 },
     new Dog { Id = 4, Name = "Pupperoni", WalkerId = 1 },
-    new Dog { Id = 5, Name = "Fluff McSnuffles", WalkerId = 2 }
+    new Dog { Id = 5, Name = "Fluff McSnuffles", WalkerId = 2 },
+    new Dog { Id = 6, Name = "Clifford", WalkerId = null }
 };
 
 List<Walker> walkers = new List<Walker> {
@@ -54,7 +55,16 @@ app.MapGet("/api/hello", () =>
 });
 
 // Dogs
-app.MapGet("/api/dogs", () => "Fetch all dogs");
+app.MapGet("/api/dogs", () =>
+{
+    return dogs.Select(d => new DogDTO
+    {
+        Id = d.Id,
+        Name = d.Name,
+        WalkerId = d.WalkerId
+    });
+});
+
 app.MapGet("/api/dogs/{id}", (int id) => $"Fetch dog with id {id}");
 app.MapPost("/api/dogs", () => "Add a new dog");
 app.MapDelete("/api/dogs/{id}", (int id) => $"Delete dog with id {id}");
