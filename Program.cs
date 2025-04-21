@@ -85,7 +85,23 @@ app.MapGet("/api/dogs/{id}", (int id) =>
     return Results.Ok(DTO);
 });
 
-app.MapPost("/api/dogs", () => "Add a new dog");
+app.MapPost("/api/dogs", (Dog newDog) =>
+{
+    int newId = dogs.Count > 0 ? dogs.Max(d => d.Id) + 1 : 1;
+
+    newDog.Id = newId;
+
+    dogs.Add(newDog);
+
+    return Results.Created($"/api/dogs/{newDog.Id}", new DogDTO
+    {
+        Id = newDog.Id,
+        Name = newDog.Name,
+        WalkerId = newDog.WalkerId
+    });
+
+});
+
 app.MapDelete("/api/dogs/{id}", (int id) => $"Delete dog with id {id}");
 
 // Walkers
