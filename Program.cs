@@ -105,13 +105,29 @@ app.MapPost("/api/dogs", (Dog newDog) =>
 app.MapDelete("/api/dogs/{id}", (int id) => $"Delete dog with id {id}");
 
 // Walkers
-app.MapGet("/api/walkers", () => "Fetch all walkers");
+app.MapGet("/api/walkers", () =>
+{
+    return walkers.Select(w => new WalkerDTO
+    {
+        Id = w.Id,
+        WalkerName = w.WalkerName
+    });
+});
+
 app.MapGet("/api/walkers/{id}", (int id) => $"Fetch walker with id {id}");
 app.MapPut("/api/walkers/{id}/cities", (int id) => $"Update cities for walker {id}");
 app.MapDelete("/api/walkers/{id}", (int id) => $"Delete walker with id {id}");
 
 // Cities
-app.MapGet("/api/cities", () => "Fetch all cities");
+app.MapGet("/api/cities", () =>
+{
+    return cities.Select(c => new CityDTO
+    {
+        Id = c.Id,
+        CityName = c.CityName
+    });
+});
+
 app.MapPost("/api/cities", () => "Add a new city");
 app.MapDelete("/api/cities/{id}", (int id) => $"Delete city with id {id}");
 
@@ -120,6 +136,26 @@ app.MapPost("/api/walkers/{walkerId}/assign-dog/{dogId}", (int walkerId, int dog
     $"Assign dog {dogId} to walker {walkerId}");
 
 // Filter Walkers by City
-app.MapGet("/api/walkers-by-city", (int cityId) => $"Fetch walkers in city {cityId}");
+app.MapGet("/api/walkers-by-city", (int cityId) =>
+{
+    // Get all the cityWalker entries related to the given cityId
+    var cityWalkerEntries = cityWalkers.Where(cw => cw.CityId == cityId).ToList();
+
+    // Extract the WalkerId from the CityWalker entries
+    var walkerIds = cityWalkerEntries.Select(cw => cw.WalkerId).ToList();
+
+    // Fetch walkers using the WalkerId
+    var walkersInCity = walkers.Where(w => walkerIds.Contains(w.Id))
+                               .Select(w => new WalkerDTO
+                               {
+                                   Id = w.Id,
+                                   WalkerName = w.WalkerName
+                               })
+                               .ToList();
+
+    // Return the list of walkers in the selected city
+    return Results.Ok(walkersInCity);
+});
+
 
 app.Run();
