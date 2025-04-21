@@ -23,7 +23,9 @@ function App() {
             </BSNavLink>
           </NavItem>
           <NavItem>
-            <BSNavLink tag={RRNavLink} to="/walkers"></BSNavLink>
+            <BSNavLink tag={RRNavLink} to="/walkers">
+              Walkers
+            </BSNavLink>
           </NavItem>
           <NavItem>
             <BSNavLink tag={RRNavLink} to="/cities">
