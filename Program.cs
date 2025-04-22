@@ -111,7 +111,7 @@ app.MapPost("/api/dogs", (Dog newDog) =>
 app.MapGet("/api/dog-assign", (int walkerId) =>
 {
     //make a list of join tables the walker is in
-    var cityWalkerEntries = cityWalkers.Where(cw => cw.CityId == walkerId).ToList();
+    var cityWalkerEntries = cityWalkers.Where(cw => cw.WalkerId == walkerId).ToList();
 
     //gets us all the city ids for the walker we currently have clicked
     var cityIds = cityWalkerEntries.Select(cw => cw.CityId).ToList();
