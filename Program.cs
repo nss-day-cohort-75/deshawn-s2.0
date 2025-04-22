@@ -156,7 +156,20 @@ app.MapGet("/api/cities", () =>
     });
 });
 
-app.MapPost("/api/cities", () => "Add a new city");
+app.MapPost("/api/cities", (City newCity) =>
+{
+    int newId = cities.Count > 0 ? cities.Max(c => c.Id) + 1 : 1;
+
+    newCity.Id = newId;
+
+    cities.Add(newCity);
+
+    return Results.Created($"/api/cities/{newCity.Id}", new CityDTO
+    {
+        Id = newCity.Id,
+        CityName = newCity.CityName
+    });
+});
 
 // Assign Dog to Walker
 app.MapPost("/api/walkers/{walkerId}/assign-dog/{dogId}", (int walkerId, int dogId) =>
