@@ -22,12 +22,17 @@ export const addDog = async (dogObj) => {
 };
 
 // TODO (later)
-export const getAllWalkers = async () => {
-  const res = await fetch("/api/walkers");
-  return res.json();
-};
-
 export const getAllCities = async () => {
   const res = await fetch("/api/cities");
   return res.json();
 };
+
+export const getWalkersByCity = async (cityId) => {
+  const res = await fetch(`/api/walkers-by-city?cityId=${cityId}`);
+  return res.json();
+};
+
+// This name is confusing! Remove or rename:
+export const getWalkers = async () => {
+  throw new Error("Use getWalkersByCity(cityId) instead");
+}
