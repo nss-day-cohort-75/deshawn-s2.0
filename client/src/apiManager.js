@@ -21,7 +21,6 @@ export const addDog = async (dogObj) => {
   return res.json();
 };
 
-// TODO (later)
 export const getAllCities = async () => {
   const res = await fetch("/api/cities");
   return res.json();
@@ -36,3 +35,18 @@ export const getWalkersByCity = async (cityId) => {
 export const getWalkers = async () => {
   throw new Error("Use getWalkersByCity(cityId) instead");
 }
+
+
+export const getAssignableDogs = async (walkerId) => {
+  const res = await fetch(`/api/dog-assign?walkerId=${walkerId}`);
+  if (!res.ok) throw new Error("Failed to fetch assignable dogs");
+  return res.json();
+};
+
+export const assignDogToWalker = async (walkerId, dogId) => {
+  const res = await fetch(`/api/walkers/${walkerId}/assign-dog/${dogId}`, {
+    method: "POST"
+  });
+  if (!res.ok) throw new Error("Failed to assign walker");
+  return res.json();
+};
