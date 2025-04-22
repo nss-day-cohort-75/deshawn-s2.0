@@ -32,11 +32,7 @@ function App() {
               Cities
             </BSNavLink>
           </NavItem>
-          <NavItem>
-            <BSNavLink tag={RRNavLink} to="/dogs/new">
-              + Add Dog
-            </BSNavLink>
-          </NavItem>
+         
         </Nav>
       </Navbar>
       <Outlet />

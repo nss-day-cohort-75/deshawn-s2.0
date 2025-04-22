@@ -25,10 +25,20 @@ export default function Home() {
   return (
     <div className="container mt-4">
       <h2>🐶 Dogs</h2>
+
+      <div className="d-flex justify-content-end mb-3">
+        <Link to="/dogs/new" className="btn btn-success">
+          + Add Dog
+        </Link>
+      </div>
+
       {dogs.length > 0 ? (
         <ul className="list-group">
           {dogs.map((dog) => (
-            <li key={dog.id} className="list-group-item d-flex justify-content-between">
+            <li
+              key={dog.id}
+              className="list-group-item d-flex justify-content-between"
+            >
               <Link to={`/dogs/${dog.id}`}>{dog.name}</Link>
             </li>
           ))}
