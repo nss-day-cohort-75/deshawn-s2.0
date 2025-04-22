@@ -160,7 +160,25 @@ app.MapPost("/api/cities", () => "Add a new city");
 
 // Assign Dog to Walker
 app.MapPost("/api/walkers/{walkerId}/assign-dog/{dogId}", (int walkerId, int dogId) =>
-    $"Assign dog {dogId} to walker {walkerId}");
+{
+    var dog = dogs.FirstOrDefault(d => d.Id == dogId);
+    if (dog == null) return Results.NotFound();
+
+    dog.WalkerId = walkerId;
+
+    // Optional: include WalkerName in the response
+    var walkerName = walkers.FirstOrDefault(w => w.Id == walkerId)?.WalkerName;
+
+    return Results.Ok(new DogDTO
+    {
+        Id = dog.Id,
+        Name = dog.Name,
+        WalkerId = dog.WalkerId,
+        WalkerName = walkerName,
+        CityId = dog.CityId
+    });
+});
+
 
 // Filter Walkers by City
 app.MapGet("/api/walkers-by-city", (int cityId) =>

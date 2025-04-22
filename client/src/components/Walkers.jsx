@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, } from "react";
 import { getAllCities, getWalkersByCity } from "../apiManager";
 import {
   Dropdown,
@@ -6,8 +6,11 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Walkers() {
+  const navigate = useNavigate();
   const [cities, setCities] = useState([]);
   const [walkers, setWalkers] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -65,8 +68,17 @@ export default function Walkers() {
           <ul className="list-group">
             {walkers.length > 0 ? (
               walkers.map((walker) => (
-                <li key={walker.id} className="list-group-item">
-                  {walker.walkerName}
+                <li
+                  key={walker.id}
+                  className="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  <span>{walker.walkerName}</span>
+                  <button
+                    className="btn btn-sm btn-outline-primary"
+                    onClick={() => navigate(`/walkers/${walker.id}/assign`)}
+                  >
+                    Assign Dog
+                  </button>
                 </li>
               ))
             ) : (
