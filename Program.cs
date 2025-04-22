@@ -2,24 +2,25 @@ using Deshawns.Models;
 using Deshawns.Models.DTOs;
 
 List<Dog> dogs = new List<Dog> {
-    new Dog { Id = 1, Name = "Deedubya", WalkerId = 2 },
-    new Dog { Id = 2, Name = "Bark Twain", WalkerId = 1 },
-    new Dog { Id = 3, Name = "Sir Waggington", WalkerId = 3 },
-    new Dog { Id = 4, Name = "Pupperoni", WalkerId = 1 },
-    new Dog { Id = 5, Name = "Fluff McSnuffles", WalkerId = 2 },
-    new Dog { Id = 6, Name = "Clifford", WalkerId = null }
+    new Dog { Id = 1, Name = "Deedubya", WalkerId = 2, CityId = 1 },
+    new Dog { Id = 2, Name = "Bark Twain", WalkerId = 1, CityId = 2 },
+    new Dog { Id = 3, Name = "Sir Waggington", WalkerId = 3, CityId = 3 },
+    new Dog { Id = 4, Name = "Pupperoni", WalkerId = 1, CityId = 1 },
+    new Dog { Id = 5, Name = "Fluff McSnuffles", WalkerId = 2, CityId = 2 },
+    new Dog { Id = 6, Name = "Clifford", WalkerId = null, CityId = 3 }
 };
 
+
 List<Walker> walkers = new List<Walker> {
-    new Walker { Id = 1, WalkerName = "Chowda" },
-    new Walker { Id = 2, WalkerName = "Scoots" },
-    new Walker { Id = 3, WalkerName = "Luna Belle" }
+    new Walker { Id = 1, WalkerName = "Simon" },
+    new Walker { Id = 2, WalkerName = "Ronald" },
+    new Walker { Id = 3, WalkerName = "Lyle" }
 };
 
 List<City> cities = new List<City> {
-    new City { Id = 1, CityName = "Dog Town" },
-    new City { Id = 2, CityName = "Pawville" },
-    new City { Id = 3, CityName = "Barkside" }
+    new City { Id = 1, CityName = "Chicago" },
+    new City { Id = 2, CityName = "Nashville" },
+    new City { Id = 3, CityName = "NYC" }
 };
 
 List<CityWalker> cityWalkers = new List<CityWalker> {
@@ -61,9 +62,11 @@ app.MapGet("/api/dogs", () =>
     {
         Id = d.Id,
         Name = d.Name,
-        WalkerId = d.WalkerId
+        WalkerId = d.WalkerId,
+        CityId = d.CityId
     });
 });
+
 
 app.MapGet("/api/dogs/{id}", (int id) =>
 {
@@ -79,11 +82,13 @@ app.MapGet("/api/dogs/{id}", (int id) =>
         Id = dog.Id,
         Name = dog.Name,
         WalkerId = dog.WalkerId,
-        WalkerName = walkerName
+        WalkerName = walkerName,
+        CityId = dog.CityId
     };
 
     return Results.Ok(DTO);
 });
+
 
 app.MapPost("/api/dogs", (Dog newDog) =>
 {
@@ -97,9 +102,32 @@ app.MapPost("/api/dogs", (Dog newDog) =>
     {
         Id = newDog.Id,
         Name = newDog.Name,
-        WalkerId = newDog.WalkerId
+        WalkerId = newDog.WalkerId,
+        CityId = newDog.CityId
     });
+});
 
+
+app.MapGet("/api/dog-assign", (int walkerId) =>
+{
+    //make a list of join tables the walker is in
+    var cityWalkerEntries = cityWalkers.Where(cw => cw.WalkerId == walkerId).ToList();
+
+    //gets us all the city ids for the walker we currently have clicked
+    var cityIds = cityWalkerEntries.Select(cw => cw.CityId).ToList();
+
+    //go through the city id ints and find the dogs w/ that city id
+    var dogsInCity = dogs.Where(d => cityIds.Contains(d.CityId) && d.WalkerId == null)
+                               .Select(d => new DogDTO
+                               {
+                                   Id = d.Id,
+                                   Name = d.Name,
+                                   WalkerId = d.WalkerId,
+                                   CityId = d.CityId
+                               })
+                               .ToList();
+
+    return Results.Ok(dogsInCity);
 });
 
 app.MapDelete("/api/dogs/{id}", (int id) => $"Delete dog with id {id}");
@@ -129,7 +157,6 @@ app.MapGet("/api/cities", () =>
 });
 
 app.MapPost("/api/cities", () => "Add a new city");
-app.MapDelete("/api/cities/{id}", (int id) => $"Delete city with id {id}");
 
 // Assign Dog to Walker
 app.MapPost("/api/walkers/{walkerId}/assign-dog/{dogId}", (int walkerId, int dogId) =>
