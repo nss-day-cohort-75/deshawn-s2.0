@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using Deshawns.Models;
 using Deshawns.Models.DTOs;
 
@@ -142,8 +143,57 @@ app.MapGet("/api/walkers", () =>
     });
 });
 
-app.MapGet("/api/walkers/{id}", (int id) => $"Fetch walker with id {id}");
-app.MapPut("/api/walkers/{id}/cities", (int id) => $"Update cities for walker {id}");
+//all cities for a walker
+app.MapGet("/api/walkers/{id}", (int id) =>
+{
+    var walker = walkers.FirstOrDefault(w => w.Id == id);
+    if (walker == null) return Results.NotFound();
+
+    var cityIds = cityWalkers.Where(cw => cw.WalkerId == id).Select(cw => cw.CityId).ToList();
+
+    var CityWalkerDTO = new
+    {
+        WalkerId = walker.Id,
+        WalkerName = walker.WalkerName,
+        CityIds = cityIds
+    };
+
+    return Results.Ok(CityWalkerDTO);
+});
+
+app.MapPut("/api/walkers/{id}", (int id, WalkerDTO newWalkerDTO) =>
+{
+    var walker = walkers.FirstOrDefault(w => w.Id == id);
+    if (walker == null) return Results.NotFound();
+
+    //update walker name
+    walker.WalkerName = newWalkerDTO.WalkerName;
+
+    //code for removing join table items
+    cityWalkers = cityWalkers.Where(cw => cw.WalkerId != id).ToList();
+    //add new city relationships from DTO
+    if (newWalkerDTO.Cities != null)
+    {
+        foreach (var city in newWalkerDTO.Cities)
+        {
+            var newId = cityWalkers.Count > 0 ? cityWalkers.Max(cw => cw.Id) + 1 : 1;
+            cityWalkers.Add(new CityWalker
+            {
+                Id = newId,
+                WalkerId = id,
+                CityId = city.Id
+            });
+        }
+    }
+
+    return Results.Ok(new WalkerDTO
+    {
+        Id = walker.Id,
+        WalkerName = walker.WalkerName,
+        Cities = newWalkerDTO.Cities
+    });
+});
+
 app.MapDelete("/api/walkers/{id}", (int id) => $"Delete walker with id {id}");
 
 // Cities
