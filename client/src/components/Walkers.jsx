@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAllCities, getWalkersByCity } from "../apiManager";
+import { getAllCities, getWalkersByCity, deleteWalker } from "../apiManager";
 import {
   Dropdown,
   DropdownToggle,
@@ -91,6 +91,21 @@ export default function Walkers() {
                       onClick={() => navigate(`/walkers/${walker.id}/edit`)}
                     >
                       Edit Cities
+                    </button>
+                    <button
+                      className="btn btn-sm btn-outline-danger"
+                      onClick={async () => {
+                        try {
+                          await deleteWalker(walker.id);
+                          setWalkers((prev) =>
+                            prev.filter((w) => w.id !== walker.id)
+                          );
+                        } catch {
+                          alert("Failed to yeet the walker.");
+                        }
+                      }}
+                    >
+                      Yeet
                     </button>
                   </div>
                 </li>
