@@ -50,3 +50,23 @@ export const assignDogToWalker = async (walkerId, dogId) => {
   if (!res.ok) throw new Error("Failed to assign walker");
   return res.json();
 };
+
+export const getWalkerCityAssignments = async (walkerId) => {
+  const res = await fetch(`/api/walkers/${walkerId}`);
+  if (!res.ok) throw new Error("Failed to load walker city assignments");
+  return res.json();
+};
+
+export const updateWalkerCities = async (walkerId, cityIds, walkerName) => {
+  const res = await fetch(`/api/walkers/${walkerId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      id: walkerId,
+      walkerName, // ✅ now in scope
+      cities: cityIds.map(id => ({ id }))
+    }),
+  });
+  if (!res.ok) throw new Error("Failed to update walker cities");
+  return res;
+};
