@@ -1,4 +1,4 @@
-import { getAllDogs } from "./apiManager";
+import { getAllDogs, deleteDog } from "./apiManager";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -40,6 +40,19 @@ export default function Home() {
               className="list-group-item d-flex justify-content-between"
             >
               <Link to={`/dogs/${dog.id}`}>{dog.name}</Link>
+              <button
+                className="btn btn-sm btn-danger"
+                onClick={async () => {
+                  try {
+                    await deleteDog(dog.id);
+                    setDogs((prev) => prev.filter((d) => d.id !== dog.id));
+                  } catch {
+                    alert("Failed to murder the dog.");
+                  }
+                }}
+              >
+                Murder
+              </button>s
             </li>
           ))}
         </ul>
