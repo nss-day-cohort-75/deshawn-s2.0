@@ -19,7 +19,7 @@ export default function DogDetails() {
   return (
     <div className="container mt-4">
       <h2>{dog.name}</h2>
-      <p><strong>Walker:</strong> {dog.walkerName ?? "No walker assigned."}</p>
+      <p><strong>Walker:</strong> {dog.WalkerName ?? "No walker assigned."}</p>
     </div>
   );
 }

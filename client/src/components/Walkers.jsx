@@ -1,4 +1,4 @@
-import { useEffect, useState, } from "react";
+import { useEffect, useState } from "react";
 import { getAllCities, getWalkersByCity } from "../apiManager";
 import {
   Dropdown,
@@ -7,7 +7,7 @@ import {
   DropdownItem,
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 
 export default function Walkers() {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ export default function Walkers() {
     <div className="container mt-4">
       <h2>🚶 Walkers</h2>
 
-      {/* Dropdown section FIRST */}
+      {/* Dropdown: choose a city */}
       <div className="mb-4">
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
           <DropdownToggle caret>
@@ -51,7 +51,7 @@ export default function Walkers() {
         </Dropdown>
       </div>
 
-      {/* Then static city list */}
+      {/* Static list of cities */}
       <h4 className="mt-3">🌆 All Cities</h4>
       <ul className="list-group mb-4">
         {cities.map((city) => (
@@ -61,7 +61,7 @@ export default function Walkers() {
         ))}
       </ul>
 
-      {/* Then filtered walker results */}
+      {/* Filtered walkers */}
       {selectedCity && (
         <>
           <h4>Walkers in {selectedCity.cityName}</h4>
@@ -72,13 +72,27 @@ export default function Walkers() {
                   key={walker.id}
                   className="list-group-item d-flex justify-content-between align-items-center"
                 >
-                  <span>{walker.walkerName}</span>
-                  <button
-                    className="btn btn-sm btn-outline-primary"
-                    onClick={() => navigate(`/walkers/${walker.id}/assign`)}
+                  <Link
+                    to={`/walkers/${walker.id}/edit`}
+                    className="text-decoration-none"
                   >
-                    Assign Dog
-                  </button>
+                    {walker.walkerName}
+                  </Link>
+
+                  <div className="d-flex gap-2">
+                    <button
+                      className="btn btn-sm btn-outline-primary"
+                      onClick={() => navigate(`/walkers/${walker.id}/assign`)}
+                    >
+                      Assign Dog
+                    </button>
+                    <button
+                      className="btn btn-sm btn-outline-secondary"
+                      onClick={() => navigate(`/walkers/${walker.id}/edit`)}
+                    >
+                      Edit Cities
+                    </button>
+                  </div>
                 </li>
               ))
             ) : (

@@ -1,6 +1,7 @@
 using System.Reflection.Metadata.Ecma335;
 using Deshawns.Models;
 using Deshawns.Models.DTOs;
+using System.Text.Json; 
 
 List<Dog> dogs = new List<Dog> {
     new Dog { Id = 1, Name = "Deedubya", WalkerId = 2, CityId = 1 },
@@ -35,6 +36,11 @@ List<CityWalker> cityWalkers = new List<CityWalker> {
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Optional: if using MVC controllers — not required for pure Map-based minimal APIs
+builder.Services.AddControllers().AddJsonOptions(opts =>
+{
+    opts.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+});
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
