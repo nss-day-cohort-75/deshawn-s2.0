@@ -137,7 +137,19 @@ app.MapGet("/api/dog-assign", (int walkerId) =>
     return Results.Ok(dogsInCity);
 });
 
-app.MapDelete("/api/dogs/{id}", (int id) => $"Delete dog with id {id}");
+app.MapDelete("/api/dogs/{id}", (int id) =>
+{
+    var dogToDelete = dogs.FirstOrDefault(d => d.Id == id);
+
+    if (dogToDelete == null)
+    {
+        return Results.NotFound();
+    }
+
+    dogs.Remove(dogToDelete);
+
+    return Results.NoContent();
+});
 
 // Walkers
 app.MapGet("/api/walkers", () =>
@@ -200,7 +212,26 @@ app.MapPut("/api/walkers/{id}", (int id, WalkerDTO newWalkerDTO) =>
     });
 });
 
-app.MapDelete("/api/walkers/{id}", (int id) => $"Delete walker with id {id}");
+app.MapDelete("/api/walkers/{id}", (int id) =>
+{
+    var walkerToDelete = walkers.FirstOrDefault(w => w.Id == id);
+
+    if (walkerToDelete == null)
+    {
+        return Results.NotFound();
+    }
+
+    foreach (var dog in dogs.Where(d => d.WalkerId == id))
+    {
+        dog.WalkerId = null;
+    }
+
+    cityWalkers = cityWalkers.Where(cw => cw.WalkerId != id).ToList();
+
+    walkers.Remove(walkerToDelete);
+
+    return Results.NoContent();
+});
 
 // Cities
 app.MapGet("/api/cities", () =>
